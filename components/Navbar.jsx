@@ -3,94 +3,134 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X , Scissors } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+
+const navItems = ['Home', 'About', 'Services', 'Contact'];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <motion.nav
-        initial={{ opacity: 0, y: -20}}
-        animate={{ opacity: 1, y: 0}}
-        transition={{ duration: 1, y: 0}}
-        className='
-        fixed top-6 left-1/2 -translate-x-1/2 z-50 
-        bg-white/80 backdroup-blur-xl border border-white/40 
-        shadow-[0_4px_20px_rgba(0,0,0,0.1)] 
-        rounded-full px-6 py-2'
+      {/* NAVBAR */}
+      <motion.header
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="fixed top-6 left-1/2 -translate-x-1/2 z-50"
       >
-       <div className="flex items-center gap-8">
+        <nav
+          className="
+            flex items-center justify-between
+            w-[90vw] max-w-6xl
+            px-6 py-3
+            bg-white/80 backdrop-blur-xl
+            border border-white/40
+            shadow-lg rounded-full
+          "
+        >
+          {/* LOGO */}
+          <Link href="/" className="text-xl font-semibold tracking-wide text-black">
+            Beige & <span className="text-[#b98567]">Blush</span>
+          </Link>
 
-        {/* logo */}
-        <div className="text-md md:text-lg font-semibold tracking-wide px-3">
-          <span className='text-black'>Beige & Blush</span>
-        </div>
+          {/* DESKTOP MENU */}
+          <div className="hidden md:flex items-center gap-10">
+            {navItems.map((item) => (
+              <Link
+                key={item}
+                href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                className="relative text-sm font-medium text-black group"
+              >
+                {item}
+                <span
+                  className="
+                    absolute left-0 -bottom-1 h-[2px] w-0
+                    bg-[#b98567] transition-all duration-300
+                    group-hover:w-full
+                  "
+                />
+              </Link>
+            ))}
 
-        {/* desktop nav */}
-        <div className="hidden md:flex items-center space-x-8">
-          {["Home", "About", "Services", "Contact"].map((item, index) => (
             <Link
-              key={index}
-              href={item == "Home" ? "/" : `/${item.toLowerCase()}`}
-              className='relative text-black font-medium group'
+              href="/appointment"
+              className="ml-4 px-5 py-2 rounded-full bg-[#b98567] text-white text-sm font-semibold hover:bg-[#a47559] transition"
             >
-              {item}
-              <span className='
-                absolute left-0 -bottom-1 w-0 h-[2px]
-                bg-amber-700 transition-all duration-300
-                group-hover:w-full'
-              ></span>
+              Book Now
             </Link>
-          ))}
-        </div>
+          </div>
 
-        {/* mobile navbar btn */}
-        <button className='md:hidden text-black ml-auto' onClick={() => setOpen(!open)}>
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
-      </div>
-        <AnimatePresence>
-          {open && (
+          {/* MOBILE TOGGLE */}
+          <button
+            onClick={() => setOpen(true)}
+            className="md:hidden text-black"
+          >
+            <Menu size={26} />
+          </button>
+        </nav>
+      </motion.header>
+
+      {/* MOBILE MENU OVERLAY */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] bg-black/40 backdrop-blur-sm"
+          >
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
               className="
-                md:hidden fixed top-22 left-1/2 -translate-x-1/2
-                w-[85%] 
-                bg-white/95 backdrop-blur-xl
-                rounded-3xl shadow-xl py-6
-                flex flex-col items-center gap-6 z-[999]
+                absolute bottom-0 left-0 right-0
+                bg-white rounded-t-3xl
+                px-8 py-10
               "
             >
-              {["Home", "About", "Services", "Contact"].map((item, i) => (
-                <Link
-                  key={i}
-                  href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                  onClick={() => setOpen(false)}
-                  className="text-black text-lg font-medium tracking-wide"
-                >
-                  {item}
-                </Link>
-              ))}
+              {/* CLOSE */}
+              <div className="flex justify-between items-center mb-10">
+                <span className="text-xl font-semibold text-black">
+                  Beige & <span className="text-[#b98567]">Blush</span>
+                </span>
+                <button onClick={() => setOpen(false)}>
+                  <X size={26} className='text-black' />
+                </button>
+              </div>
 
-              {/* Optional Book Button */}
+              {/* LINKS */}
+              <div className="flex flex-col gap-6 text-lg font-medium">
+                {navItems.map((item) => (
+                  <Link
+                    key={item}
+                    href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                    onClick={() => setOpen(false)}
+                    className="text-black"
+                  >
+                    {item}
+                  </Link>
+                ))}
+              </div>
+
+              {/* CTA */}
               <Link
-                href="/AppoinymentForm"
+                href="/appointment"
+                onClick={() => setOpen(false)}
                 className="
-                  mt-2 px-6 py-2 text-white bg-black 
-                  rounded-full tracking-wide
+                  block mt-10 text-center
+                  px-6 py-3 rounded-full
+                  bg-[#b98567] text-white font-semibold
                 "
               >
-                Book Now
+                Book Your Experience
               </Link>
             </motion.div>
-          )}
-        </AnimatePresence>
-
-      </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
